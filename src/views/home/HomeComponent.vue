@@ -6,22 +6,25 @@
         </div>
         <div slot="center">
           <label for="searchinput">
-            <el-input type="text" v-model="searchInput" name="searchinput" placeholder="查找地点、公交"/>
+            <el-input type="text" v-model="searchInput" name="searchinput" placeholder="请输入省、市、区等具体位置"/>
           </label>
         </div>
         <div slot="right">
           <el-button type="text" @click="searchBtn">搜索</el-button>
         </div>
       </nav-bar-component>
-
-      <map-component :address="actionInput"/>
+      <div id="map-container">
+        <map-component :address="actionInput"/>
+      </div>
     </div>
 </template>
 
 <script>
 import MapComponent from '@/components/home/MapComponent.vue';
 import NavBarComponent from '@/components/navbar/NavBarComponent.vue';
-  export default {
+import { InputIsNull } from '../../common/string';
+
+export default {
     name: "HomeComponent",
     components: {
       NavBarComponent,
@@ -36,8 +39,15 @@ import NavBarComponent from '@/components/navbar/NavBarComponent.vue';
     methods: {
       searchBtn() {
         //判空
-        if(this.searchInput === null) return;
-        
+        if(this.searchInput === '') {
+          this.$message({
+          showClose: true,
+          message: '' + InputIsNull,
+          type: 'warning',
+          offset: '60'
+          })
+          return;
+        } 
         //给子组件通信
         this.actionInput = this.searchInput
       }
@@ -47,5 +57,14 @@ import NavBarComponent from '@/components/navbar/NavBarComponent.vue';
 </script>
 
 <style scoped>
-
+  #home{
+    width: 100%;
+    height: 840px;
+    position: relative;
+  }
+  #map-container{
+    position: relative;
+    width: 100%;
+    height: 95%;
+  }
 </style>
