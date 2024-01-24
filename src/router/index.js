@@ -9,6 +9,7 @@ const ProfileComponent = () => import("../views/profile/ProfileComponent")
 const TakeComponent = () => import("../views/take/TakeComponent")
 const LoginComponent = () => import("../components/login/LoginComponent")
 const RegisterComponent = () => import("../components/register/RegisterComponent")
+const FindPasswordComponent = () => import("../components/findPassword/FindPasswordComponent")
 
 //2.通过Vue.use(插件)，安装插件
 Vue.use(VueRouter)
@@ -42,6 +43,10 @@ const routes = [
   {
     path: '/register',
     component: RegisterComponent
+  },
+  {
+    path: '/findPassword',
+    component: FindPasswordComponent
   }
 ]
 

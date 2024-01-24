@@ -16,8 +16,10 @@ export const TokenName = "X-Token";
 
 //处理错误信息合集
 export const Error_Msg = {
-  PASSWORD_REGEX_ERROR: "请输入正确格式的密码",
-  PHONE_REGEX_ERROR: "请输入正确格式的手机号",
+  CONFIRMPASSWORD_REGEX_ERROR : "两次密码输入不一致",
+  USERNAME_REGEX_ERROR : "请输入正确格式的用户名,规则:6-10位数字、大小写字母",
+  PASSWORD_REGEX_ERROR: "请输入正确格式的密码,规则:6-10位数字、大小写字母",
+  PHONE_REGEX_ERROR: "请输入正确格式的手机号,规则:11位数字",
   INPUTISNULL : "输入不能为空",
   ACCOUNT_ERROR : "账号不存在",
   PASSWORD_ERROR : "密码不正确",
@@ -51,6 +53,15 @@ export const Error_Msg = {
 /**
  * 设置Error_Msg内容为只读
  */
+
+Object.defineProperty(Error_Msg, 'CONFIRMPASSWORD_REGEX_ERROR', {
+  value: Error_Msg.CONFIRMPASSWORD_REGEX_ERROR,
+  writable: false,
+});
+Object.defineProperty(Error_Msg, 'USERNAME_REGEX_ERROR', {
+  value: Error_Msg.USERNAME_REGEX_ERROR,
+  writable: false,
+});
 Object.defineProperty(Error_Msg, 'PASSWORD_REGEX_ERROR', {
   value: Error_Msg.PASSWORD_REGEX_ERROR,
   writable: false,

@@ -12,15 +12,8 @@ export default {
   name: 'App',
   components: {
     MainTabBarComponent
-  },  
-  data() {
-    return {
-
-    }
-  },
-  methods: {
-
   }
+
 }
 </script>
 

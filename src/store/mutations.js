@@ -9,6 +9,8 @@ export default {
   setXToken(state, token) {
     state.XToken = token;
   },
+
+  
   /**
    * 更新后端传来的不为空的用户信息
    * @param {*} state 仓库

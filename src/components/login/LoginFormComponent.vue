@@ -14,20 +14,19 @@
             </el-input>
           </el-form-item>
         </div>
-        <el-button round @click="submitForm" class="login-btn">登录！</el-button>
+        <el-button round @click="submit" class="login-btn">登录！</el-button>
         <div class="login-link-container">
             <el-link style="position: relative;margin-left: 15%;">忘记密码？</el-link>
-            <el-link style="position: relative;margin-left: 40%;">去注册！</el-link>
+            <el-link style="position: relative;margin-left: 40%;" @click="goRegister">去注册！</el-link>
         </div>
       </el-form>
   </div>
 </template>
 
 <script>
+import { submitFormMixin } from '@/common/mixin';
 import { Error_Msg } from '@/common/string';
 import { regex } from '@/common/util';
-import { requestGateway } from '@/network/request';
-import store from '@/store';
 
 export default {
   name: "LoginFormComponent",
@@ -50,48 +49,44 @@ export default {
     return {
       user: {
         mobile:'',
-        password: ''
+        password: '',
       },
+      
       rules: {
         mobile: [ {validator: validateMobile, trigger: 'blur'} ],
         password: [ {validator: validatePassword, trigger: 'blur'} ]
       }
     }
   },
+  mixins: [submitFormMixin],
   methods: {
-    submitForm() {
-      const vm = this
-      //数据格式校验
-      vm.$refs.user.validate( (valid) => {
-        if ( !valid ){
-          vm.$message({showClose: true,message: "登录失败",type: 'error',offset: '60'})
-          return false;
-        }
-        requestGateway({
-          url: '/api/user/login',
-          method: 'post',
-          data: vm.user
-        })
-        .then(res => {
-          if (Object.values(Error_Msg).includes(res.data)) {
-            vm.$message({showClose: true,message: res.data,type: 'innfo',offset: '60'})
-            return;
-          } 
-          
-          vm.$message({showClose: true,message: "登录成功",type: 'success',offset: '60'})
-          //将用户信息传入vuex中修改
-          store.commit('setUser',res.data)
-          //将真实密码更新到其中
-          store.commit('setUser',vm.user)
-        })
-        .catch(err => {vm.$message({showClose: true,message: err,type: 'error',offset: '60'})})
-      });
+    /**
+     * 登录
+     */
+    submit() {
+      this.submitForm(this, {
+        url: '/api/user/login',
+        method: 'post',
+        data: this.user
+      })
+    },
+
+    /**
+     * 去注册
+     */
+    goRegister(){
+      this.$router.push('/register')
+    },
+    
+    /**
+     * 去修改密码
+     */
+    goModifyPassword(){
+      this.$router.push('/modifyPassword')
     }
 
   }
-
 }
-
 
 </script>
 
@@ -121,7 +116,7 @@ export default {
   }
 
   .input{
-    font-size: 38px;
+    font-size: 30px;
   }
 
   .login-link-container{
