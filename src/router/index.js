@@ -7,6 +7,8 @@ const HomeComponent = () => import("../views/home/HomeComponent")
 const AcceptComponent = () => import("../views/accept/AcceptComponent")
 const ProfileComponent = () => import("../views/profile/ProfileComponent")
 const TakeComponent = () => import("../views/take/TakeComponent")
+const LoginComponent = () => import("../components/login/LoginComponent")
+const RegisterComponent = () => import("../components/register/RegisterComponent")
 
 //2.通过Vue.use(插件)，安装插件
 Vue.use(VueRouter)
@@ -33,6 +35,14 @@ const routes = [
     path: '/take',
     component: TakeComponent
   },
+  {
+    path: '/login',
+    component: LoginComponent
+  },
+  {
+    path: '/register',
+    component: RegisterComponent
+  }
 ]
 
 //3.创建VueRouter对象

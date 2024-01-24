@@ -1,5 +1,6 @@
+import store from "@/store";
 import axios from "axios";
-import { GatewayUrl, MapSearchUrl, MapServerApiKey } from '../common/string';
+import { MapSearchUrl, MapServerApiKey } from '../common/string';
 
 //示例
 // export function requestGateway(config){
@@ -44,11 +45,11 @@ import { GatewayUrl, MapSearchUrl, MapServerApiKey } from '../common/string';
  */
 export function requestGateway(config){
     const instance = axios.create({
-      baseURL:GatewayUrl,
+      //baseURL:GatewayUrl,
       timeout: 5000,
       headers: {
-        'X-Token': ''
-      }
+        'X-Token': store.state.XToken
+      },
     })
     
     instance.interceptors.request.use(config => {
@@ -58,6 +59,8 @@ export function requestGateway(config){
     })
 
     instance.interceptors.response.use(result => {
+      const token = result.headers['x-token'];  //从响应头中获取 X-Token 的值
+      store.commit('setXToken', token);         //更新 Vuex 中的 XToken 变量
       return result
     },error => {
       return error

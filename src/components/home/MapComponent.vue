@@ -1,5 +1,6 @@
 <template>
   <div id="container">
+    
   </div>
 </template>
 
@@ -62,7 +63,7 @@ export default {
       let vm = this
       //请求搜索该地点的经纬度
       requestMapSearch({
-        searchAddress:vm.address
+        searchAddress: vm.address
       })
       .then(function(res) {
         let location = res.data.geocodes[0].location + ''
@@ -77,12 +78,7 @@ export default {
         vm.map.setZoomAndCenter(18,position)
       })
       .catch(function(err) {
-        vm.$message({
-          showClose: true,
-          message: err,
-          type: 'error',
-          offset: '60'
-        })
+        vm.$message({showClose: true,message: err,type: 'error',offset: '60'})
       });
     }
 

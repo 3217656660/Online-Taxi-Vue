@@ -8,7 +8,15 @@ import mutations from "./mutations";
 Vue.use(Vuex);
 
 const state = {
-  XToken:'dadwdasdad1d2s3a1da23sd123add2'
+  XToken:'',
+  User: {
+    id: -1,
+    username: '',
+    mobile: '',
+    password: '',
+    email: ''
+  },
+  
 }
 
 //2.创建对象

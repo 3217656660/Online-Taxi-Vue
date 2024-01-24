@@ -22,7 +22,7 @@
 <script>
 import MapComponent from '@/components/home/MapComponent.vue';
 import NavBarComponent from '@/components/navbar/NavBarComponent.vue';
-import { InputIsNull } from '../../common/string';
+import { Error_Msg } from '../../common/string';
 
 export default {
     name: "HomeComponent",
@@ -37,20 +37,19 @@ export default {
       }
     },
     methods: {
+      /**
+       * 监控搜索按钮，给子组件MapComponent通信
+       */
       searchBtn() {
         //判空
         if(this.searchInput === '') {
-          this.$message({
-          showClose: true,
-          message: '' + InputIsNull,
-          type: 'warning',
-          offset: '60'
-          })
+          this.$message({showClose: true,message: '' + Error_Msg.INPUTISNULL,type: 'warning',offset: '60'})
           return;
         } 
         //给子组件通信
         this.actionInput = this.searchInput
       }
+
     },
     
   }
