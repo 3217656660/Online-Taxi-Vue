@@ -68,7 +68,7 @@ export default {
         url: '/api/user/login',
         method: 'post',
         data: this.user
-      })
+      });
     },
 
     /**

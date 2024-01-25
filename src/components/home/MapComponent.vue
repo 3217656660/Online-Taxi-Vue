@@ -49,8 +49,10 @@ export default {
             zoom: 14,
             resizeEnable: true
           });
-          this.map.addControl(new AMap.Scale());//比例尺
-          this.map.addControl(new AMap.ToolBar())//放大缩小
+          //比例尺,位置左上
+          this.map.addControl(new AMap.Scale({position: 'LT'}));
+          //放大缩小,位置左上
+          this.map.addControl(new AMap.ToolBar({position: 'RT'}))
         })
         .catch((e) => {
           console.log('err' + e);

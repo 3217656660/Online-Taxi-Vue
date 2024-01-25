@@ -16,6 +16,7 @@ export const TokenName = "X-Token";
 
 //处理错误信息合集
 export const Error_Msg = {
+  PLEASE_LOGIN : "请先登录",
   CONFIRMPASSWORD_REGEX_ERROR : "两次密码输入不一致",
   USERNAME_REGEX_ERROR : "请输入正确格式的用户名,规则:6-10位数字、大小写字母",
   PASSWORD_REGEX_ERROR: "请输入正确格式的密码,规则:6-10位数字、大小写字母",
@@ -53,7 +54,10 @@ export const Error_Msg = {
 /**
  * 设置Error_Msg内容为只读
  */
-
+Object.defineProperty(Error_Msg, 'PLEASE_LOGIN', {
+  value: Error_Msg.PLEASE_LOGIN,
+  writable: false,
+});
 Object.defineProperty(Error_Msg, 'CONFIRMPASSWORD_REGEX_ERROR', {
   value: Error_Msg.CONFIRMPASSWORD_REGEX_ERROR,
   writable: false,

@@ -53,14 +53,18 @@ export function requestGateway(config){
     })
     
     instance.interceptors.request.use(config => {
-      return config 
+      return config
     },error => {
       return error
     })
 
     instance.interceptors.response.use(result => {
-      const token = result.headers['x-token'];  //从响应头中获取 X-Token 的值
-      store.commit('setXToken', token);         //更新 Vuex 中的 XToken 变量
+      if( result.headers['x-token'] !== undefined ) {
+        //从响应头中获取 X-Token 的值
+        const token = result.headers['x-token'];  
+        //更新 Vuex 中的 XToken 变量
+        store.commit('setXToken', token);     
+      }
       return result
     },error => {
       return error

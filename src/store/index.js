@@ -7,15 +7,28 @@ import mutations from "./mutations";
 //1.安装插件
 Vue.use(Vuex);
 
-const state = {
-  XToken:'',
-  User: {
+//获取本地存储的用户信息，并初始化到vuex中，注意：在修改的时候要将本地永久存储的一并需改
+let localUser = JSON.parse( localStorage.getItem('User') )
+if ( localUser === null ) {
+  localUser = {
     id: -1,
     username: '',
     mobile: '',
     password: '',
     email: ''
+  };
+}
+
+const state = {
+  XToken: localStorage.getItem('X-Token'),
+  User: {
+    id: localUser.id,
+    username: localUser.username,
+    mobile: localUser.mobile,
+    password: localUser.password,
+    email: localUser.email
   },
+  IsLogin: localStorage.getItem('IsLogin')
   
 }
 
