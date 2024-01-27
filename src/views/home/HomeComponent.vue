@@ -5,50 +5,50 @@
           <i class="el-icon-search"></i>
         </div>
         <div slot="center">
-          <label for="searchinput">
-            <el-input type="text" v-model="searchInput" name="searchinput" placeholder="请输入省、市、区等具体位置"/>
-          </label>
+          <search-suggest-component />
         </div>
         <div slot="right">
           <el-button type="text" @click="searchBtn">搜索</el-button>
         </div>
       </nav-bar-component>
       <div id="map-container">
-        <map-component :address="actionInput"/>
+        <map-component ref="childMap"/>
       </div>
     </div>
 </template>
 
 <script>
+import { Error_Msg } from '@/common/string';
 import MapComponent from '@/components/home/MapComponent.vue';
 import NavBarComponent from '@/components/navbar/NavBarComponent.vue';
-import { Error_Msg } from '../../common/string';
+import SearchSuggestComponent from '@/components/searchSuggest/SearchSuggestComponent.vue';
+import store from '@/store';
 
 export default {
     name: "HomeComponent",
     components: {
       NavBarComponent,
-      MapComponent
+      MapComponent,
+      SearchSuggestComponent
     },
     data() {
       return {
-        searchInput: '',
-        actionInput: ''
+        
       }
     },
     methods: {
       /**
-       * 监控搜索按钮，给子组件MapComponent通信
+       * 监控搜索按钮，并设置中心点
        */
       searchBtn() {
-        //判空
-        if(this.searchInput === '') {
-          this.$message({showClose: true,message: '' + Error_Msg.INPUTISNULL,type: 'warning',offset: '60'})
-          return;
-        } 
-        //给子组件通信
-        this.actionInput = this.searchInput
-      }
+        const vm = this
+        if (store.state.HomePosition.length === 0) {
+        vm.$message({showClose: true, message: Error_Msg.INPUTISNULL, type: 'error', offset: '60'})
+        return;
+        }
+        //定位到指定地点
+        this.$refs.childMap.map.setZoomAndCenter(18, store.state.HomePosition)
+      },
 
     },
     

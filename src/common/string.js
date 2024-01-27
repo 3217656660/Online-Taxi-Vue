@@ -11,6 +11,12 @@ export const GatewayUrl = "http://localhost/taxi";
 //高德api 地址 => 经纬度
 export const MapSearchUrl = "https://restapi.amap.com/v3/geocode/geo";
 
+//高德api 模糊keywords => 模糊搜索结果
+export const MapSearchSuggestUrl = "https://restapi.amap.com/v3/assistant/inputtips";
+
+//高德api ip => 所在城市
+export const MapIpSearchCityUrl = "https://restapi.amap.com/v3/ip";
+
 //token名(只是声明)
 export const TokenName = "X-Token";
 

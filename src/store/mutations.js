@@ -36,7 +36,31 @@ export default {
   setIsLogin(state, isLogin){
     state.IsLogin = isLogin;
     localStorage.setItem('IsLogin',isLogin);
-  }
+  },
 
+
+  /**
+   * 修改city
+   * @param {*} state 仓库
+   * @param {*} city 新的city
+   */
+  setCity(state, city) {
+    state.City = city;
+  },
+
+
+  setHomePosition(state, position){
+    state.HomePosition = position
+  },
   
+
+  setTakePosition(state, position){
+    state.TakePosition = position
+  },
+
+
+  setAcceptPosition(state, position){
+    state.AcceptPosition = position
+  },
+
 }

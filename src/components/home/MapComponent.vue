@@ -9,11 +9,10 @@ window._AMapSecurityConfig = {
   securityJsCode: "b96e81c0ef8264f5345a7da790828a5a"
 };
 import AMapLoader from '@amap/amap-jsapi-loader'; //导入默认的不加外面括号
-import { requestMapSearch } from '../../network/request';
 
 export default {
   name: "MapComponent",
-  props:['address'],//父组件传来的要搜索的地址
+  props:['startAddress','endAddress'],//父组件传来的要搜索的地址
   data() {
     return {
       map: null ,//初始化地图对象
@@ -65,30 +64,21 @@ export default {
           console.log('err' + e);
         });
     },
+
+
     /**
-     * 搜索并定位到指定的地址
+     * 定位该起点具体位置并设置到地图上
      */
-    searchAddress(){
-      let vm = this
-      //请求搜索该地点的经纬度
-      requestMapSearch({
-        searchAddress: vm.address
-      })
-      .then(function(res) {
-        let location = res.data.geocodes[0].location + ''
-        location = location.split(',')
-        vm.nowAddress = {
-          text: vm.address,
-          Longitude:location[0],
-          Latitude: location[1]
-        }
-        //设置中心点
-        let position = [ location[0] , location[1] ]
-        vm.map.setZoomAndCenter(18,position)
-      })
-      .catch(function(err) {
-        vm.$message({showClose: true,message: err,type: 'error',offset: '60'})
-      });
+    addStart(){
+
+    },
+
+
+    /**
+     * 定位该终点具体位置并设置到地图上
+     */
+    addEnd(){
+
     }
 
   },
@@ -98,11 +88,37 @@ export default {
      * @param {*} newValue 新值
      * @param {*} oldValue 旧值
      */
-    address(newValue,oldValue){
+    address(newValue, oldValue){
       if (newValue === oldValue) 
         return;
       this.searchAddress()
-    }
+    },
+
+
+    /**
+     * 检测传来要设置起点的地址信息
+     * @param {*} newValue 新值
+     * @param {*} oldValue 旧值
+     */
+    startAddress(newValue, oldValue){
+      if (newValue === oldValue) 
+        return;
+      this.addStart()
+    },
+
+
+    /**
+     * 检测传来要设置终点的地址信息
+     * @param {*} newValue 新值
+     * @param {*} oldValue 旧值
+     */
+    endAddress(newValue, oldValue){
+      if (newValue === oldValue) 
+        return;
+      this.addEnd()
+    },
+
+
     
   }
 

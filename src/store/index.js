@@ -28,6 +28,10 @@ const state = {
     password: localUser.password,
     email: localUser.email
   },
+  City: '',
+  HomePosition: [],
+  TakePosition: [],
+  AcceptPosition: [],
   IsLogin: localStorage.getItem('IsLogin')
   
 }

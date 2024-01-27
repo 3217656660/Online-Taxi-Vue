@@ -1,6 +1,6 @@
 import store from "@/store";
 import axios from "axios";
-import { MapSearchUrl, MapServerApiKey } from '../common/string';
+import { MapIpSearchCityUrl, MapSearchSuggestUrl, MapSearchUrl, MapServerApiKey } from '../common/string';
 
 //示例
 // export function requestGateway(config){
@@ -74,6 +74,23 @@ export function requestGateway(config){
 
 
 /**
+ * 高德地图api 实现ip => 城市
+ * @returns Promise对象 其中then中的参数为所转换到的城市
+ */
+export function requestMapIpToCity(){
+  const url = MapIpSearchCityUrl + '?key=' + MapServerApiKey;
+  const instance = axios.create({
+    baseURL:url,
+    timeout: 5000
+  })
+  instance.interceptors.response.use(result => {
+    return result.data.city
+  })
+  return instance()
+}
+
+
+/**
  * 高德地图api，实现 地名 => 地理经纬度转换
  * @param {*} config 请求配置
  * @returns Promise对象
@@ -95,6 +112,27 @@ export function requestMapSearch(config){
     return error
   })
   return instance(config)
+}
+
+
+/**
+ * 高德地图api，实现 关键词查询
+ * @param {*} searchKeywords 用户输入的关键字
+ * @returns Promise对象 其中then中的参数为匹配到的信息列表
+ */
+export function requestMapSearchSuggest(searchKeywords){
+  //先获取所在城市
+  const url = MapSearchSuggestUrl + '?key=' + MapServerApiKey +
+  '&keywords=' + searchKeywords + 
+  '&city=' + store.state.City + '&citylimit=true';
+  const instance = axios.create({
+  baseURL:url,
+  timeout: 5000
+  })
+  instance.interceptors.response.use(result => {
+  return result.data.tips;
+  })
+  return instance()
 }
 
 
