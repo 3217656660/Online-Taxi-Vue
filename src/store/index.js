@@ -30,7 +30,8 @@ const state = {
   },
   City: '',
   HomePosition: [],
-  TakePosition: [],
+  StartPosition: [],
+  EndPosition: [],
   AcceptPosition: [],
   IsLogin: localStorage.getItem('IsLogin')
   

@@ -52,10 +52,15 @@ export default {
   setHomePosition(state, position){
     state.HomePosition = position
   },
+
+
+  setStartPosition(state, position){
+    state.StartPosition = position
+  },
   
 
-  setTakePosition(state, position){
-    state.TakePosition = position
+  setEndPosition(state, position){
+    state.EndPosition = position
   },
 
 

@@ -12,16 +12,10 @@ import AMapLoader from '@amap/amap-jsapi-loader'; //导入默认的不加外面�
 
 export default {
   name: "MapComponent",
-  props:['startAddress','endAddress'],//父组件传来的要搜索的地址
   data() {
     return {
       map: null ,//初始化地图对象
-      auto: [],  //输入提示
-      nowAddress:{//当前地址信息
-        text:'',
-        Longitude:0,
-        Latitude:0
-      }
+      aMap: null,
     }
   },
   mounted() {
@@ -39,11 +33,12 @@ export default {
         key: "64920b361d05ba95dd58da13746fc6ac", //开发者Key:首次调用load必须写
         version: "2.0", 
         plugins: [
-          "AMap.ToolBar","AMap.Geolocation"
+          "AMap.ToolBar","AMap.Geolocation","AMap.Driving","AMap.DragRoute"
         ], // 需要使用的的插件列表
 
       })
         .then((AMap) => {
+          this.aMap = AMap;
           this.map = new AMap.Map("container", {
             viewMode: "2D", 
             zoom: 14,
@@ -65,61 +60,8 @@ export default {
         });
     },
 
-
-    /**
-     * 定位该起点具体位置并设置到地图上
-     */
-    addStart(){
-
-    },
-
-
-    /**
-     * 定位该终点具体位置并设置到地图上
-     */
-    addEnd(){
-
-    }
-
   },
   watch: {
-    /**
-     * 检测传来要搜索的地址信息
-     * @param {*} newValue 新值
-     * @param {*} oldValue 旧值
-     */
-    address(newValue, oldValue){
-      if (newValue === oldValue) 
-        return;
-      this.searchAddress()
-    },
-
-
-    /**
-     * 检测传来要设置起点的地址信息
-     * @param {*} newValue 新值
-     * @param {*} oldValue 旧值
-     */
-    startAddress(newValue, oldValue){
-      if (newValue === oldValue) 
-        return;
-      this.addStart()
-    },
-
-
-    /**
-     * 检测传来要设置终点的地址信息
-     * @param {*} newValue 新值
-     * @param {*} oldValue 旧值
-     */
-    endAddress(newValue, oldValue){
-      if (newValue === oldValue) 
-        return;
-      this.addEnd()
-    },
-
-
-    
   }
 
 }
