@@ -40,19 +40,26 @@ export default {
         key: "64920b361d05ba95dd58da13746fc6ac", //开发者Key:首次调用load必须写
         version: "2.0", 
         plugins: [
-          "AMap.Scale","AMap.ToolBar"
+          "AMap.ToolBar","AMap.Geolocation"
         ], // 需要使用的的插件列表
+
       })
         .then((AMap) => {
           this.map = new AMap.Map("container", {
             viewMode: "2D", 
             zoom: 14,
-            resizeEnable: true
+            resizeEnable: true,
           });
-          //比例尺,位置左上
-          this.map.addControl(new AMap.Scale({position: 'LT'}));
+          
+          // 设置定位模式为设备模式
+          this.map.addControl(new AMap.Geolocation({
+            enableHighAccuracy: true, 
+            provider: 'device', 
+            position: 'LT',
+            zoomToAccuracy: true,
+          }));
           //放大缩小,位置左上
-          this.map.addControl(new AMap.ToolBar({position: 'RT'}))
+          this.map.addControl(new AMap.ToolBar({position: 'RT'}));
         })
         .catch((e) => {
           console.log('err' + e);

@@ -27,7 +27,6 @@ export const submitFormMixin = {
           //将密码更新到vuex其中
           store.commit('setUser', {password: vm.user.password})
           //设置用户的在本地永久存储的状态
-          console.log('vm.$route :>> ', vm.$route);
           if(vm.$route.path === '/login') 
             store.commit('setIsLogin', "yes")
           //退回

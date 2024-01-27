@@ -103,20 +103,20 @@ export default {
   .input-container{
     position: relative;
     margin-left: 15%;
-    margin-top: 15%;
+    margin-top: 10%;
     width: 70%;
   }
 
   .login-btn{
     position: relative;
-    margin-top: 5%;
     margin-left: 15%;
+    margin-top: 10%;
     width: 70%;
     height: 60px;
   }
 
   .input{
-    font-size: 30px;
+    font-size: 25px;
   }
 
   .login-link-container{

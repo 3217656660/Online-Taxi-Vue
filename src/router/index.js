@@ -10,6 +10,7 @@ const TakeComponent = () => import("../views/take/TakeComponent")
 const LoginComponent = () => import("../components/login/LoginComponent")
 const RegisterComponent = () => import("../components/register/RegisterComponent")
 const FindPasswordComponent = () => import("../components/findPassword/FindPasswordComponent")
+const AgreementComponent = () => import("../views/agreement/AgreementComponent")
 
 //2.通过Vue.use(插件)，安装插件
 Vue.use(VueRouter)
@@ -47,7 +48,12 @@ const routes = [
   {
     path: '/findPassword',
     component: FindPasswordComponent
+  },
+  {
+    path: '/agreement',
+    component: AgreementComponent
   }
+
 ]
 
 //3.创建VueRouter对象

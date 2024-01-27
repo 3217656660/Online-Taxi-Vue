@@ -28,7 +28,7 @@ export default {
 <style scoped>
 #register-form-container {
   position: relative;
-  margin-top: 80px;
+  margin-top: 20px;
   width: 100%;
   height: 600px;
 }

@@ -32,16 +32,13 @@
 
         <el-button round @click="submit" class="login-btn" :disabled="!agree">注册！</el-button>
         <div class="login-link-container">
-          <span style="position: relative;margin-left: 10%;">同意协议？</span>
-          <el-switch style="position: relative;margin-left: 1%;"
-            v-model="agree"
-            active-text="同意"
-            inactive-text="不同意">
-          </el-switch>
-          <el-link style="position: relative;margin-left: 10%;">
-            查看协议
-            <i class="el-icon-view el-icon--right"></i>
+          <el-link style="position: relative;margin-left: 15%;" href="/agreement">
+              是否同意协议<i class="el-icon-view el-icon--right"></i>
           </el-link>
+
+          <el-switch style="position: relative;margin-left: 8%;" v-model="agree">
+          </el-switch>
+          <span style="position: relative;margin-left: 2%;">{{chooseText}}</span>
         </div>
       </el-form>
   </div>
@@ -102,7 +99,7 @@ export default {
         password: [ {validator: validatePassword, trigger: 'blur'} ],
         confirmPassword: [ {validator: validateConfirmPassword, trigger: 'blur'} ]
       },
-      agree: false
+      agree: false,
     }
   },
   mixins: [submitFormMixin],
@@ -119,6 +116,11 @@ export default {
       })
     },
     
+  },
+  computed: {
+    chooseText(){
+      return this.agree ? "同意" : "不同意";
+    }
   }
 }
 </script>
@@ -136,7 +138,7 @@ export default {
   .input-container{
     position: relative;
     margin-left: 15%;
-    margin-top: 15%;
+    margin-top: 8%;
     width: 70%;
   }
 
@@ -149,7 +151,7 @@ export default {
   }
 
   .input{
-    font-size: 30px;
+    font-size: 20px;
   }
 
   .login-link-container{

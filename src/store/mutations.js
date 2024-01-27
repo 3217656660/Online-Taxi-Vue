@@ -34,7 +34,6 @@ export default {
    * @param {*} isLogin 传来的值, 表示是否登录
    */
   setIsLogin(state, isLogin){
-    console.log('setIsLogin :>> ');
     state.IsLogin = isLogin;
     localStorage.setItem('IsLogin',isLogin);
   }
