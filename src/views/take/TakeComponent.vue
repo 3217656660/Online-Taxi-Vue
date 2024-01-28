@@ -5,7 +5,7 @@
           <h3>起点</h3>
         </div>
         <div slot="center">
-          <search-suggest-component/>
+          <search-suggest-component ref="childStartSearch"/>
         </div>
         <div slot="right">
           <el-button type="text" @click="addStartBtn">查询</el-button>
@@ -17,17 +17,23 @@
         <h3>终点</h3>
         </div>
         <div slot="center">
-          <search-suggest-component/>
+          <search-suggest-component ref="childEndSearch" :is-disabled="isDisabled"/>
         </div>
         <div slot="right">
-          <el-button type="text" @click="addEndBtn">路线</el-button>
+          <el-button type="text" @click="addEndBtn" :disabled="isDisabled">路线</el-button>
         </div>
     </nav-bar-component>
-    
-    <div id="take-map-container">
-      <map-component ref="childMap"/>
-    </div>
 
+    <prepare-take-order-component 
+      v-show="showOrderMsg" @cancel-event="handleChildCancelEvent" 
+      :start="startAddress" :end="endAddress"
+      :distance="distance" 
+      :arrive-time="arriveTime"
+    />
+
+    <div id="take-map-container">
+      <map-component ref="childMap"></map-component>
+    </div>
   </div>
 </template>
 
@@ -36,6 +42,8 @@ import { checkIsLogin } from '@/common/mixin';
 import MapComponent from '@/components/home/MapComponent.vue';
 import NavBarComponent from '@/components/navbar/NavBarComponent.vue';
 import SearchSuggestComponent from '@/components/searchSuggest/SearchSuggestComponent.vue';
+import PrepareTakeOrderComponent from '@/components/take/PrepareTakeOrderComponent.vue';
+import { requestMapSearch } from '@/network/request';
 import store from '@/store';
 
   export default {
@@ -46,62 +54,167 @@ import store from '@/store';
       this.checkLogin(this)
     },
     mounted(){
-      this.$message({showClose: true, message: "请依次输入起点和终点并点击右边按钮", type: 'info', offset: '60', duration: 0})
+      this.$message({showClose: true, message: "请先输入起点并点击查询", type: 'info', offset: '60', duration: 0})
     },
     data() {
       return {
+        isDisabled: true,
+        startAddress: '',
+        endAddress: '',
+        distance: 0,
+        arriveTime: 0,
+        showOrderMsg: false,
+        driving: null //AMap.Driving实例
       }
     },
     components: {
       NavBarComponent,
       MapComponent,
-      SearchSuggestComponent
+      SearchSuggestComponent,
+      PrepareTakeOrderComponent
     },
     methods: {
       /**
-       * 添加起点到地图上
+       * 添加起点
        */
       addStartBtn(){
-        store.commit('setStartPosition',store.state.HomePosition)
+        this.startAddress = this.$refs.childStartSearch.searchSuggestInput
+        if ( store.state.HomePosition.length === 0 ){
+          if ( this.$refs.childStartSearch.searchSuggestInput === '' )
+            this.$message({showClose: true, message: "起点输入为空", type: 'error', offset: '60'});
+          else{
+            //用户手敲的地址并没有选择提示框内的地址
+            requestMapSearch({
+              searchAddress: this.$refs.childStartSearch.searchSuggestInput
+            }).then(res => {
+              const list = ('' + res.data.geocodes[0].location).split(',')
+              store.commit('setStartPosition', list)
+              this.$refs.childMap.map.setZoomAndCenter(18, list)
+              store.commit('setHomePosition', [])
+              this.isDisabled = false
+            }).catch(err => {
+              console.log('err :>> ', err);
+              this.$message({showClose: true, message: "起点地址查询失败，请稍后重试", type: 'error', offset: '60'});
+            });
+          }
+          return;
+        }
+        store.commit('setStartPosition', store.state.HomePosition)
         this.$refs.childMap.map.setZoomAndCenter(18, store.state.HomePosition)
+        store.commit('setHomePosition', [])
+        this.isDisabled = false
       },
 
 
       /**
-       * 添加终点到地图上
+       * 添加终点, 并执行showPath
        */
       addEndBtn(){
         const vm = this
+        vm.endAddress = vm.$refs.childEndSearch.searchSuggestInput
+
         if (store.state.StartPosition.length === 0){
-          vm.$message({showClose: true, message: "请先输入起点并点击选择", type: 'error', offset: '60'})
+          vm.$message({showClose: true, message: "请先输入起点并点击查询", type: 'error', offset: '60'})
           return;
         }
+
+        if ( store.state.HomePosition.length === 0 ){
+          if ( vm.$refs.childEndSearch.searchSuggestInput === '' )
+            vm.$message({showClose: true, message: "终点输入为空", type: 'error', offset: '60'});
+          else{
+            //用户手敲的地址并没有选择提示框内的地址
+            requestMapSearch({
+              searchAddress: vm.$refs.childEndSearch.searchSuggestInput
+            }).then(res => {
+              const list = ('' + res.data.geocodes[0].location).split(',')
+              store.commit('setEndPosition', list)
+              store.commit('setHomePosition', [])
+              vm.showPath()
+            }).catch(err => {
+              console.log('err :>> ', err);
+              vm.$message({showClose: true, message: "终点地址查询失败，请稍后重试", type: 'error', offset: '60'});
+            });
+          }
+          return;
+        }
+        
         store.commit('setEndPosition',store.state.HomePosition)
+        store.commit('setHomePosition', [])
+        vm.showPath()
+      },
+
+
+      /**
+       * 绘制路线图展示
+       */
+      showPath() {
+        const vm = this
         const aMap = vm.$refs.childMap.aMap
         const map = vm.$refs.childMap.map
+        const city = store.state.City
         //绘制路线
-        aMap.plugin("AMap.DragRoute", function () {
+        aMap.plugin("AMap.Driving", function () {
           //path 是驾车导航的起、途径和终点，最多支持16个途经点
-          let path = [];
-          path.push(store.state.StartPosition);
-          path.push(store.state.EndPosition);
-          const route = new aMap.DragRoute(map, path, 0);
-          route.search();
+          let path = [
+          { 'keyword': vm.startAddress, 'city': city },
+          { 'keyword': vm.endAddress, 'city': city }
+          ];
+          const driver = new aMap.Driving({
+            policy: 0, 
+            map: map,
+          });
+          //绘图
+          driver.search(path);
+          driver.on('complete', function(result) {
+            if (result.info === 'OK') {
+              const route = result.routes[0];
+              console.log('route :>> ', route);
+              vm.distance = route.distance;
+              vm.arriveTime = route.time;
+            }
+          });
+          vm.driving = driver
+          //产生相关信息的界面
+          vm.showOrderMsg = true
         });
       },
 
-    }
 
+      /**
+       * 取消待提交订单
+       */
+      handleChildCancelEvent() {
+        //清空所有相关信息
+        const vm = this
+        vm.startAddress = ''
+        vm.endAddress = ''
+        vm.isDisabled = true
+        vm.showOrderMsg = false
+        store.commit('setStartPosition', [])
+        store.commit('setEndPosition', [])
+        vm.$refs.childStartSearch.searchSuggestInput = ''
+        vm.$refs.childEndSearch.searchSuggestInput = ''
+        vm.driving.clear()
+      },
+
+
+
+      /**
+       *  提交订单到服务端
+       */
+
+
+    }
   }
 </script>
 
 <style scoped>
 #take-map-container{
+  z-index: 1;
   position: relative;
-    padding:0px;
-    margin: 0px;
-    width: 100%;
-    height: 840px;
+  padding:0px;
+  top: 0;
+  width: 100%;
+  height: 840px;
 }
-
 </style>

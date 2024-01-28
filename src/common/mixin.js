@@ -66,7 +66,9 @@ export const checkIsLogin = {
           vm.$message({showClose: true, message: Error_Msg.PLEASE_LOGIN, type: 'error', offset: '60'})
           return;
         }
-      });
+      }).catch(err => {
+        vm.$message({showClose: true, message: err, type: 'error', offset: '60'})
+      })
     },
     
   }

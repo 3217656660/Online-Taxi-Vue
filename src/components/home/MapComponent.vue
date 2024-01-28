@@ -33,7 +33,7 @@ export default {
         key: "64920b361d05ba95dd58da13746fc6ac", //开发者Key:首次调用load必须写
         version: "2.0", 
         plugins: [
-          "AMap.ToolBar","AMap.Geolocation","AMap.Driving","AMap.DragRoute"
+          "AMap.ToolBar","AMap.Geolocation","AMap.Driving"
         ], // 需要使用的的插件列表
 
       })

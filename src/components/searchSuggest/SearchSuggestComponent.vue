@@ -2,6 +2,7 @@
   <div id="search-suggest">
     <label for="searchinput">
       <el-autocomplete
+        :disabled="isDisabled"
         class="inline-input"
         v-model="searchSuggestInput"
         :fetch-suggestions="querySearch"
@@ -19,6 +20,7 @@ import store from '@/store';
 
 export default {
   name: "SearchSuggestComponent",
+  props: ['isDisabled'],
   data() {
     return {
       suggestList: [],
