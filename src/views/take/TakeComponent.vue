@@ -26,9 +26,10 @@
 
     <prepare-take-order-component 
       v-show="showOrderMsg" @cancel-event="handleChildCancelEvent" 
+      @take-order-event="handleChildTakeOrderEvent"
       :start="startAddress" :end="endAddress"
-      :distance="distance" 
-      :arrive-time="arriveTime"
+      :distance="distance" :arrive-time="arriveTime"
+      
     />
 
     <div id="take-map-container">
@@ -39,11 +40,12 @@
 
 <script>
 import { checkIsLogin } from '@/common/mixin';
+import { Error_Msg } from '@/common/string';
 import MapComponent from '@/components/home/MapComponent.vue';
 import NavBarComponent from '@/components/navbar/NavBarComponent.vue';
 import SearchSuggestComponent from '@/components/searchSuggest/SearchSuggestComponent.vue';
 import PrepareTakeOrderComponent from '@/components/take/PrepareTakeOrderComponent.vue';
-import { requestMapSearch } from '@/network/request';
+import { requestGateway, requestMapSearch } from '@/network/request';
 import store from '@/store';
 
   export default {
@@ -200,9 +202,44 @@ import store from '@/store';
 
 
       /**
-       *  提交订单到服务端
+       * 提交订单到服务端
        */
+      handleChildTakeOrderEvent() {
+        const vm = this;
+        //1.收集数据
+        const userCreateOrderVo = {
+          userId: store.state.User.id,
+          startAddress: vm.startAddress,
+          startAddressLongitude: store.state.StartPosition[0],
+          startAddressLatitude: store.state.StartPosition[1],
+          endAddress: vm.endAddress,
+          endAddressLongitude: store.state.EndPosition[0],
+          endAddressLatitude: store.state.EndPosition[1],
+          distance: vm.distance / 1000,
+        };
+        //2.发送请求
+        requestGateway({
+          url: '/api/main/createOrder',
+          method: 'post',
+          data: userCreateOrderVo
+        }).then(res => {
+          if (res.data === Error_Msg.ORDER_CREATE_ERROR)
+            vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_ERROR, type: 'error', offset: '60'})
+          else if(res.data === Error_Msg.ORDER_NOT_SOLVED)
+            vm.$message({showClose: true, message: Error_Msg.ORDER_NOT_SOLVED, type: 'error', offset: '60'})
+          else {
+            vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_SUCCESS, type: 'error', offset: '60'})
+          }
 
+        }).catch(err => {
+          console.log('err :>> ', err);
+          vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_ERROR, type: 'error', offset: '60'})
+        })
+        //3.处理结果
+
+
+        //4.页面展示
+      }
 
     }
   }

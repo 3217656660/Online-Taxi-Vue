@@ -68,4 +68,9 @@ export default {
     state.AcceptPosition = position
   },
 
+
+  setUserCreateOrderVo(state, userCreateOrderVo){
+    state.UserCreateOrderVo = userCreateOrderVo
+  },
+
 }

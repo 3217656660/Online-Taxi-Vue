@@ -7,10 +7,10 @@ export const regex = {
   phoneRegex : /^\d{11}$/,
 
   //2.密码匹配
-  passwordRegex : /^[a-zA-Z0-9]{1,10}$/, //   /^[a-zA-Z0-9]{6,10}$/
+  passwordRegex : /^[a-zA-Z0-9]{6,10}$/, //   /^[a-zA-Z0-9]{6,10}$/
 
   //3.用户名匹配
-  userNameRegex : /^[a-zA-Z0-9]{1,10}$/ //   /^[a-zA-Z0-9]{6,10}$/
+  userNameRegex : /^[a-zA-Z0-9]{6,10}$/ //   /^[a-zA-Z0-9]{6,10}$/
 
 };
 

@@ -28,6 +28,21 @@ const state = {
     password: localUser.password,
     email: localUser.email
   },
+  UserCreateOrderVo: {
+    id: -1,
+    userId: localUser.id,
+    driverId: -1,
+    startAddress: '',
+    startAddressLongitude: 0,
+    startAddressLatitude: 0,
+    endAddress: '',
+    endAddressLongitude: '',
+    endAddressLatitude: '',
+    status: 0,
+    price: 0,
+    distance: 0,
+    endTime: ''
+  },
   City: '',
   HomePosition: [],
   StartPosition: [],

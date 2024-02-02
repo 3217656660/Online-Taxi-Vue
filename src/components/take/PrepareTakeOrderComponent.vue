@@ -26,14 +26,11 @@ export default {
     }
   },
   methods: {
+    /**
+     * 提交订单
+     */
     takeOrder() {
-      //1.收集信息
-
-      //2.异步请求
-
-      //3.处理结果
-
-      //4.页面改变展示
+      this.$emit('take-order-event');
     },
 
 
@@ -63,7 +60,7 @@ export default {
      */
     arriveTimeStr() {
       const second = this.arriveTime
-      const hour = second / 3600
+      const hour = Math.floor(second / 3600)
       //分钟默认去尾+1
       const minute = Math.floor(second / 60 % 60 + 1)
       console.log('minute :>> ', minute);
