@@ -39,13 +39,11 @@ export default {
         //将当前输入的关键字模糊查询并设置到列表suggestList
         requestMapSearchSuggest(queryString)
           .then(list => {
-            console.log('list :>> ', list);
             // 将name键值转换为value
             this.suggestList = list.map(({ name, ...rest }) => ({ value: name, ...rest }));
             let suggestList = this.suggestList;
             let results = queryString ? suggestList.filter(this.createFilter(queryString)) : suggestList;
             // 调用 callback 返回建议列表的数据
-            console.log('results :>> ', results);
             cb(results);
           })
     },

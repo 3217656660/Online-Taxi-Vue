@@ -12,6 +12,13 @@ module.exports = defineConfig({
         pathRewrite: {
           '^/api': '/'  // 重写路径，将 /api 替换为空
         }
+      },
+      'websocket': {
+        target: 'http://localhost:4001', // 后端服务地址
+        changeOrigin: true,
+        pathRewrite: {
+          '^/websocket': '/'  // 重写路径，将 /api 替换为空
+        }
       }
     }
   }

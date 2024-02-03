@@ -29,7 +29,7 @@
       @take-order-event="handleChildTakeOrderEvent"
       :start="startAddress" :end="endAddress"
       :distance="distance" :arrive-time="arriveTime"
-      
+      ref="childPrepare"
     />
 
     <div id="take-map-container">
@@ -170,7 +170,6 @@ import store from '@/store';
           driver.on('complete', function(result) {
             if (result.info === 'OK') {
               const route = result.routes[0];
-              console.log('route :>> ', route);
               vm.distance = route.distance;
               vm.arriveTime = route.time;
             }
@@ -200,7 +199,6 @@ import store from '@/store';
       },
 
 
-
       /**
        * 提交订单到服务端
        */
@@ -228,18 +226,16 @@ import store from '@/store';
           else if(res.data === Error_Msg.ORDER_NOT_SOLVED)
             vm.$message({showClose: true, message: Error_Msg.ORDER_NOT_SOLVED, type: 'error', offset: '60'})
           else {
-            vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_SUCCESS, type: 'error', offset: '60'})
+            vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_SUCCESS, type: 'success', offset: '60'})
+            //3.处理结果
+            this.$refs.childPrepare.handleCreateOrderSuccess()
           }
 
         }).catch(err => {
           console.log('err :>> ', err);
           vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_ERROR, type: 'error', offset: '60'})
         })
-        //3.处理结果
-
-
-        //4.页面展示
-      }
+      },
 
     }
   }
