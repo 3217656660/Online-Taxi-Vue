@@ -73,4 +73,12 @@ export default {
     state.UserCreateOrderVo = userCreateOrderVo
   },
 
+  setUserCreateOrderVoWithNotNull(state, userCreateOrderVo){
+    const keys = Object.keys(state.UserCreateOrderVo)
+    for (const key of keys) {
+      if (userCreateOrderVo[key] !== '' && userCreateOrderVo[key] !== -1 && userCreateOrderVo[key] !== undefined)
+        state.UserCreateOrderVo[key] = userCreateOrderVo[key]; 
+    }
+  }
+
 }

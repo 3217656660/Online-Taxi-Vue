@@ -227,10 +227,10 @@ import store from '@/store';
             vm.$message({showClose: true, message: Error_Msg.ORDER_NOT_SOLVED, type: 'error', offset: '60'})
           else {
             vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_SUCCESS, type: 'success', offset: '60'})
-            //3.处理结果
+            //3.处理结果,保存数据到仓库
+            store.commit('setUserCreateOrderVoWithNotNull', userCreateOrderVo)
             this.$refs.childPrepare.handleCreateOrderSuccess()
           }
-
         }).catch(err => {
           console.log('err :>> ', err);
           vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_ERROR, type: 'error', offset: '60'})
