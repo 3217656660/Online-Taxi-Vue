@@ -39,6 +39,7 @@ export default {
       })
         .then((AMap) => {
           this.aMap = AMap;
+          this.$emit('child-loaded');
           this.map = new AMap.Map("container", {
             viewMode: "2D", 
             zoom: 14,

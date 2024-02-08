@@ -11,6 +11,10 @@ const LoginComponent = () => import("../components/login/LoginComponent")
 const RegisterComponent = () => import("../components/register/RegisterComponent")
 const FindPasswordComponent = () => import("../components/findPassword/FindPasswordComponent")
 const AgreementComponent = () => import("../views/agreement/AgreementComponent")
+const AcceptDriverMessageComponent = () => import("../views/accept/AcceptDriverMessageComponent")
+const AcceptListComponent = () => import("../views/accept/AcceptListComponent")
+const AcceptOrderingComponent = () => import("../views/accept/AcceptOrderingComponent")
+
 
 //2.通过Vue.use(插件)，安装插件
 Vue.use(VueRouter)
@@ -27,7 +31,22 @@ const routes = [
   },
   {
     path: '/accept',
-    component: AcceptComponent
+    redirect: '/acceptDriverMessage',
+    component: AcceptComponent,
+    children: [
+      {
+        path: '/acceptDriverMessage',
+        component: AcceptDriverMessageComponent,
+      },
+      {
+        path: '/acceptList',
+        component: AcceptListComponent,
+      },
+      {
+        path: '/acceptOrdering',
+        component: AcceptOrderingComponent,
+      },
+    ]
   },
   {
     path: '/profile',

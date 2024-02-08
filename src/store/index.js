@@ -4,7 +4,7 @@ import actions from "./actions";
 import getters from "./getters";
 import modules from "./modules";
 import mutations from "./mutations";
-//1.安装插件
+//安装插件
 Vue.use(Vuex);
 
 //获取本地存储的用户信息，并初始化到vuex中，注意：在修改的时候要将本地永久存储的一并需改
@@ -28,6 +28,13 @@ const state = {
     password: localUser.password,
     email: localUser.email
   },
+  Driver: {
+    id: 1,
+    name: '',
+    mobile: 0,
+    carType: '',
+    carNumber: 0
+  },
   UserCreateOrderVo: {
     id: -1,
     userId: localUser.id,
@@ -43,14 +50,23 @@ const state = {
     distance: 0,
     endTime: ''
   },
+  DriverActionTakeOrderVo: {
+    id: 0,
+    userId: 0,
+    driverId: 0,
+    nowAddress: '',
+    nowAddressLongitude: 0,
+    nowAddressLatitude: 0
+  },
   City: '',
   HomePosition: [],
   StartPosition: [],
   EndPosition: [],
   AcceptPosition: [],
   IsLogin: localStorage.getItem('IsLogin')
+
   
-}
+};
 
 //2.创建对象
 const store = new Vuex.Store({

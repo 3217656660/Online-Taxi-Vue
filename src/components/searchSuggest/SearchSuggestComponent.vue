@@ -80,9 +80,6 @@ export default {
       store.commit('setCity',city)
     });
   },
-  watch: {
-
-  }
 
 
 }

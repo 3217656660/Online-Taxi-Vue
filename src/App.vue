@@ -19,6 +19,6 @@ export default {
 
 <style>
   /* 引用样式 */
-  @import url("./assets/css/base.css");
+  @import url("@/assets/css/base.css");
 
 </style>

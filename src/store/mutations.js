@@ -29,6 +29,20 @@ export default {
 
 
   /**
+   * 更新传来的不为空的司机信息
+   * @param {*} state 仓库
+   * @param {*} driver 传来的不为空的用户信息
+   */
+  setDriver(state, driver){
+    const keys = Object.keys(state.Driver)
+    for (const key of keys) {
+      if (driver[key] !== '' && driver[key] !== -1 && driver[key] !== undefined)
+        state.Driver[key] = driver[key]; 
+    }
+  },
+
+
+  /**
    * 更新用户的登录状态 yes表示已登录,no表示未登录
    * @param {*} state 仓库
    * @param {*} isLogin 传来的值, 表示是否登录
@@ -100,6 +114,22 @@ export default {
       if (userCreateOrderVo[key] !== '' && userCreateOrderVo[key] !== -1 && userCreateOrderVo[key] !== undefined)
         state.UserCreateOrderVo[key] = userCreateOrderVo[key]; 
     }
-  }
+  },
+
+
+  /**
+   * 修改司机提交信息
+   * @param {*} state 
+   * @param {*} driverActionTakeOrderVo 
+   */
+    setDriverActionTakeOrderVo(state, driverActionTakeOrderVo){
+      const keys = Object.keys(state.DriverActionTakeOrderVo)
+      for (const key of keys) {
+        if (driverActionTakeOrderVo[key] !== '' && driverActionTakeOrderVo[key] !== -1 && driverActionTakeOrderVo[key] !== undefined)
+          state.DriverActionTakeOrderVo[key] = driverActionTakeOrderVo[key]; 
+      }
+    },
+
+
 
 }
