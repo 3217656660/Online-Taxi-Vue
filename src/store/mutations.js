@@ -49,30 +49,51 @@ export default {
   },
 
 
+  /**
+   * 修改位置信息
+   * @param {*} state 
+   * @param {*} position 
+   */
   setHomePosition(state, position){
     state.HomePosition = position
   },
 
 
+  /**
+   * 修改开始位置
+   * @param {*} state 
+   * @param {*} position 
+   */
   setStartPosition(state, position){
     state.StartPosition = position
   },
   
 
+  /**
+   * 修改结束位置
+   * @param {*} state 
+   * @param {*} position 
+   */
   setEndPosition(state, position){
     state.EndPosition = position
   },
 
 
+  /**
+   * 修改司机位置
+   * @param {*} state 
+   * @param {*} position 
+   */
   setAcceptPosition(state, position){
     state.AcceptPosition = position
   },
 
 
-  setUserCreateOrderVo(state, userCreateOrderVo){
-    state.UserCreateOrderVo = userCreateOrderVo
-  },
-
+  /**
+   * 修改用户提交信息
+   * @param {*} state 
+   * @param {*} userCreateOrderVo 
+   */
   setUserCreateOrderVoWithNotNull(state, userCreateOrderVo){
     const keys = Object.keys(state.UserCreateOrderVo)
     for (const key of keys) {

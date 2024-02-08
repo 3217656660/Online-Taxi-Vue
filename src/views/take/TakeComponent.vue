@@ -27,6 +27,7 @@
     <prepare-take-order-component 
       v-show="showOrderMsg" @cancel-event="handleChildCancelEvent" 
       @take-order-event="handleChildTakeOrderEvent"
+      @take-order-success-event="handleChildTakeOrderSuccessEvent"
       :start="startAddress" :end="endAddress"
       :distance="distance" :arrive-time="arriveTime"
       ref="childPrepare"
@@ -66,7 +67,8 @@ import store from '@/store';
         distance: 0,
         arriveTime: 0,
         showOrderMsg: false,
-        driving: null //AMap.Driving实例
+        driving: null, //AMap.Driving实例
+        stompClient: null,
       }
     },
     components: {
@@ -208,6 +210,7 @@ import store from '@/store';
         const userCreateOrderVo = {
           userId: store.state.User.id,
           startAddress: vm.startAddress,
+          status: 0,
           startAddressLongitude: store.state.StartPosition[0],
           startAddressLatitude: store.state.StartPosition[1],
           endAddress: vm.endAddress,
@@ -225,10 +228,12 @@ import store from '@/store';
             vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_ERROR, type: 'error', offset: '60'})
           else if(res.data === Error_Msg.ORDER_NOT_SOLVED)
             vm.$message({showClose: true, message: Error_Msg.ORDER_NOT_SOLVED, type: 'error', offset: '60'})
+          else if(res.data === Error_Msg.SERVE_ERROR)
+            vm.$message({showClose: true, message: Error_Msg.SERVE_ERROR, type: 'error', offset: '60'})
           else {
             vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_SUCCESS, type: 'success', offset: '60'})
             //3.处理结果,保存数据到仓库
-            store.commit('setUserCreateOrderVoWithNotNull', userCreateOrderVo)
+            store.commit('setUserCreateOrderVoWithNotNull', res.data)
             this.$refs.childPrepare.handleCreateOrderSuccess()
           }
         }).catch(err => {
@@ -236,6 +241,62 @@ import store from '@/store';
           vm.$message({showClose: true, message: Error_Msg.ORDER_CREATE_ERROR, type: 'error', offset: '60'})
         })
       },
+
+
+      /**
+       * 处理订单被接单成功用户端的变化
+       */
+      handleChildTakeOrderSuccessEvent() {
+        //1.订阅司机位置
+        //2.删除起点到终点路径。动态设置司机的位置
+        const vm = this;
+        const stompClient = vm.$refs.childPrepare.stompClient;
+        const aMap = vm.$refs.childMap.aMap;
+        const map = vm.$refs.childMap.map;
+        vm.driving.clear()
+
+        //设置起点点标记
+        const startAddressMarker = new aMap.Marker({
+          position: store.state.StartPosition,
+          offset: new aMap.Pixel(-10, -10),
+          icon: "//vdata.amap.com/icons/b18/1/2.png",
+          title: "起点",
+        });
+        startAddressMarker.addTo(map);
+
+        //设置司机点标记
+        console.log('store.state.AcceptPosition :>> ', store.state.AcceptPosition);
+        const acceptAddressMarker = new aMap.Marker({
+          position: store.state.AcceptPosition,
+          offset: new aMap.Pixel(-10, -10),
+          icon: "//vdata.amap.com/icons/b18/1/2.png",
+          title: "司机",
+        });
+        acceptAddressMarker.addTo(map);
+          //模拟司机websocket连接发送位置
+          const driverActionTakeOrderVo = {
+            userId: store.state.User.id,
+            nowAddressLongitude: store.state.StartPosition[0],
+            nowAddressLatitude: store.state.StartPosition[1]
+          };
+          stompClient.send('/app/sendLocation', JSON.stringify(driverActionTakeOrderVo), {'content-type': 'application/json'});
+          
+          const userId = store.state.User.id;
+          //订阅
+          stompClient.subscribe(`/user/${userId}/queue/locationUpdate/notifications`, notification => {
+            const message = JSON.parse(notification.body).content;
+            store.commit('setAcceptPosition', message);
+            //动态移动
+            aMap.plugin('AMap.MoveAnimation', function(){
+              acceptAddressMarker.moveTo(message, {
+                duration: 1000,
+                delay: 500,
+              });
+            });
+          });
+
+      },
+
 
     }
   }

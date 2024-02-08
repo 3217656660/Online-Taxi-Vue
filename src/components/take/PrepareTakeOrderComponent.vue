@@ -64,6 +64,9 @@ export default {
     },
 
 
+    /**
+     * 处理订单创建
+     */
     handleCreateOrderSuccess() {
       const vm = this
       //1.修改页面信息，展示正在寻找司机
@@ -85,6 +88,9 @@ export default {
     },
 
 
+    /**
+     * 订阅订单是否被接单
+     */
     connect() {
       const vm = this
       const socket = new SockJS('/websocket/ws');
@@ -93,17 +99,13 @@ export default {
         console.log('Connected: ' + frame);
         //订阅司机接单消息
         const userId = store.state.User.id;
-        vm.stompClient.subscribe(`/user/${userId}/queue/notifications`, notification => {
+        vm.stompClient.subscribe(`/user/${userId}/queue/orderAccept/notifications`, notification => {
           vm.message = JSON.parse(notification.body).content;
           //改变仓库数据
           store.commit('setUserCreateOrderVoWithNotNull', {"driverId": vm.message.driverId, "status": 1})
           store.commit('setAcceptPosition', [vm.message.nowAddressLongitude, vm.message.nowAddressLatitude])
-          console.log(store.state.UserCreateOrderVo);
-          console.log(store.state.AcceptPosition);
-
-          //改变页面展示
-
-          console.log('this.message :>> ', vm.message);
+          //通知父组件接单成功
+          this.$emit('take-order-success-event');
         });
 
       }, error => {
@@ -112,6 +114,9 @@ export default {
     },
 
 
+    /**
+     * 关闭连接
+     */
     disconnect() {
       if (this.stompClient !== null) {
         this.stompClient.disconnect();
@@ -120,12 +125,17 @@ export default {
     },
 
 
+    /**
+     * 取消已经创建好的订单
+     */
     cancelOrder() {
       const vm = this;
       //1.发送取消请求，提示取消结果
       //2.取消成功关闭websocket连接，解除倒计时，改变页面。取消失败继续进行订单
       const order = {
+        "id": store.state.UserCreateOrderVo.id,
         "userId": store.state.UserCreateOrderVo.userId,
+        "driverId": store.state.UserCreateOrderVo.driverId,
         "startAddress": store.state.UserCreateOrderVo.startAddress,
         "endAddress": store.state.UserCreateOrderVo.endAddress,
         "distance": store.state.UserCreateOrderVo.distance,
@@ -139,23 +149,21 @@ export default {
         //判断取消结果
         if(res.data === Error_Msg.ORDER_CANCEL_SUCCESS){
           vm.$message({showClose: true, message: Error_Msg.ORDER_CANCEL_SUCCESS, type: 'success', offset: '60', duration: 0});
-          clearInterval(vm.timeOut)
+          clearInterval(vm.timeOut);
           this.disconnect();
           //数据改变
           vm.countdown = 300;
-
           //页面改变
           vm.createOrderSuccessPreDisplay = {display: ''}
           vm.createOrderSuccessDisplay = {display: 'none'}
-          
         }else if(res.data === Error_Msg.ORDER_CANCEL_ERROR) {
           vm.$message({showClose: true, message: Error_Msg.ORDER_CANCEL_ERROR, type: 'error', offset: '60'});
         }
       }).catch(err => {
         console.log('err :>> ', err);
       });
+    },
 
-    }
 
   },
   computed: {

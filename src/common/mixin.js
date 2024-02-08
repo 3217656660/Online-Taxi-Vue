@@ -56,16 +56,20 @@ export const checkIsLogin = {
         vm.$message({showClose: true, message: Error_Msg.PLEASE_LOGIN, type: 'error', offset: '60'})
         return;
       }
-      //去后端校验
+      //去后端校验登录状态
       requestGateway({
-        url: '/api/user/getById/' + userId,
+        url: '/api/main/checkLogin',
         method: 'get'
       }).then(res => {
         if (res.response !== undefined && res.response.status === 401){
           vm.$router.push('/login')
           vm.$message({showClose: true, message: Error_Msg.PLEASE_LOGIN, type: 'error', offset: '60'})
           return;
+        }else if(res.response !== undefined && res.response.status !== 200){
+          vm.$router.push('/')
+          vm.$message({showClose: true, message: Error_Msg.SERVE_ERROR, type: 'error', offset: '60'})
         }
+
       }).catch(err => {
         vm.$message({showClose: true, message: err, type: 'error', offset: '60'})
       })
